@@ -1,0 +1,13 @@
+#clientsData {
+  padding-left: 0;
+}
+
+#clientsData li {
+  padding: 5px;
+  border: 1px solid gray;
+  margin: 15px;
+}
+
+.notFound {
+  display: none;
+}
