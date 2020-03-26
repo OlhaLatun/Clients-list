@@ -1,4 +1,5 @@
 function displayData(clientsList = clients) {
+  clearList();
   const ul = document.querySelector("#clientsData");
   clientsList.forEach(client => {
     ul.appendChild(getElement(client));
@@ -78,7 +79,6 @@ function filterClients() {
     .querySelector("#filterInput")
     .value.toLowerCase()
     .trim();
-  console.log(filterString);
   if (filterString) {
     const filteredClients = clients.filter(client => {
       return (
@@ -120,4 +120,28 @@ function getTotalAmount(clientsList = clients) {
 
 function removeCurrencyFromAmount(amount) {
   return Number(amount.slice(1));
+}
+
+function addClient() {
+  const data = {
+    id:1,
+    firstName:"Demetris",
+    lastName:"Nerheny",
+    email:"dnerheny0@timesonline.co.uk",
+    gender:"Male",
+    amount:"$2.08",
+    date:"7/28/2019",
+    avatar:"https://robohash.org/omnisveniamqui.jpg?size=50x50&set=set1"
+  }
+  
+  const newId = database.ref().child("clients").push().key;
+  let updates = {};
+  updates[`clients/${newId}`] = data;
+  database.ref().update(updates, function(error){
+    if (error) {
+      console.error("Data was not added to database!");
+    } else {
+      console.log("Data added successfully");
+    }
+  });
 }

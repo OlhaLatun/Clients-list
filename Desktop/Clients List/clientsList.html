@@ -3,8 +3,6 @@
   <head>
     <title>My clients list</title>
     <link rel="stylesheet" type="text/css" href="styles/index.css" />
-    <script type="text/javascript" src="scripts/clientsData.js"></script>
-    <script type="text/javascript" src="scripts/script.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <link
       rel="stylesheet"
@@ -71,6 +69,11 @@
         </form>
       </nav>
       <div class="row">
+        <button class="btn-block btn-primary" onclick="addClient()">
+          Add new client
+        </button>
+      </div>
+      <div class="row">
         <div class="col-12">
           <ul class="list-unstyled" id="clientsData"></ul>
         </div>
@@ -94,11 +97,6 @@
         </div>
       </div>
     </section>
-    <script>
-      (function() {
-        displayData();
-      })();
-    </script>
     <script
       src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
       integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
@@ -115,13 +113,19 @@
       crossorigin="anonymous"
     ></script>
 
+  
     <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
-
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
 <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
-
-<script type="text/javascript" src="scripts/firebase-latun.js">  
-</script>
+     <script type="text/javascript" src="scripts/firebase-latun.js"></script>
+     <script type="text/javascript" src="scripts/script.js"></script>
+     <script type="text/javascript" src="scripts/clientsData.js"></script>
+<script>
+      (function() {
+        displayData();
+      })();
+  </script>
   </body>
 </html>
