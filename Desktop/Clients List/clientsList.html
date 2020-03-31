@@ -65,7 +65,15 @@
           >
             Z - A
           </button>
-          <a>$<span class=" totalAmountContainer">00.00</span></a>
+          <!-- <a>$<span class=" totalAmountContainer">00.00</span></a> -->
+
+          <button
+            type="button"
+            class="btn btn-outline-secondary ml-1"
+            onclick="logOut()"
+          >
+           Log Out
+          </button>
         </form>
       </nav>
       <div class="row">
@@ -117,6 +125,7 @@
     <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
 <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
      <script type="text/javascript" src="scripts/firebase-latun.js"></script>

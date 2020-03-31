@@ -11,3 +11,33 @@
 .notFound {
   display: none;
 }
+
+/* login page styles */
+
+#cover {
+  background: url('https://source.unsplash.com/random/1920x1080') center center no-repeat;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+}
+
+.col-xl-5 {
+   background-color: rgba(255, 255, 255, 0.6);
+   padding: 15px;
+   border-radius: 10%;
+}
+
+h2 {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+
+
+

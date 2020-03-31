@@ -1,3 +1,20 @@
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    // User is signed in.
+  //   var displayName = user.displayName;
+    let email = user.email;
+  //   var emailVerified = user.emailVerified;
+  //   var photoURL = user.photoURL;
+  //   var isAnonymous = user.isAnonymous;
+  //   var uid = user.uid;
+  //   var providerData = user.providerData;
+    // ...
+  } else {
+    // User is signed out.
+    window.location.href = "file:///Users/oluna/Desktop/Clients%20List/login.html";
+  }
+});
+
 function displayData(clientsList = clients) {
   clearList();
   const ul = document.querySelector("#clientsData");
@@ -143,5 +160,15 @@ function addClient() {
     } else {
       console.log("Data added successfully");
     }
+  });
+}
+
+function logOut() {
+  firebase.auth().signOut().then(function() {
+    // Sign-out successful.
+    window.location.href = "file:///Users/oluna/Desktop/Clients%20List/login.html";
+  }).catch(function(error) {
+    console.log(error);
+    // An error happened.
   });
 }
