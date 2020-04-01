@@ -1,30 +1,20 @@
 
 let state = "login";
-const form = document.querySelector("[name='registerForm']");
+const registerForm = document.querySelector("[name='registerForm']");
 
 
-form.querySelector("[type='password']").addEventListener("blur", event => {
+registerForm.querySelector("[type='password']").addEventListener("blur", event => {
     validatePassword(event.target);
 });
 
-form.addEventListener("submit", event => {
-    event.preventDefault();
-    validateForm(event.target);
+registerForm.querySelector("[name='email']").addEventListener("blur", event => {
+    validateEmail(event.target);
 });
 
-function validateForm(target) {
-    validatePassword(target.password);
-   registerNewUser(target.email.value, target.password.value);
-};
-
-function validatePassword(field) {
-    if (field.value.length < 10) {
-        field.className += " is-invalid";
-    } else {
-        field.className = "form-control is-valid";
-    }
-};
-
+registerForm.addEventListener("submit", event => {
+    event.preventDefault();
+    validateRegisterForm(event.target);
+});
 
 const loginForm = document.querySelector("[name='loginForm']");
 
@@ -32,6 +22,61 @@ loginForm.addEventListener("submit", event => {
     event.preventDefault();
     validateLoginForm(event.target);
 });
+
+loginForm.querySelector("[type='password']").addEventListener("blur", event => {
+    validatePassword(event.target);
+});
+
+loginForm.querySelector("[name='email']").addEventListener("blur", event => {
+    validateEmail(event.target);
+});
+
+// Validation 
+
+function validateRegisterForm(target) {
+    const isFormValid = validateRequiredFields(target);
+    isFormValid ? registerNewUser(target.email.value, target.password.value) : null;
+    };
+     
+function validateLoginForm(target) {
+    const isFormValid = validateRequiredFields(target);
+isFormValid ? logIn(target.email.value, target.password.value) : null;
+} 
+
+function validateRequiredFields(target) {
+    const isPasswordValid = validatePassword(target.password);
+    const isEmailValid = validateEmail(target.email);
+    console.log(isPasswordValid);
+    console.log(isEmailValid);
+    return isPasswordValid && isEmailValid;
+}
+
+function validatePassword(field) {
+    if (field.value) {
+        markFieldAsValid(field);
+        return true;
+    }
+    markFieldAsInvalid(field);
+    return false;
+};
+
+function validateEmail(field) {
+   if (field.value && validator.isEmail(field.value)){
+    markFieldAsValid(field);
+        return true 
+    } 
+    markFieldAsInvalid(field);
+   return false;
+};
+
+function markFieldAsInvalid(field) {
+    field.className += " is-invalid";
+}
+
+function markFieldAsValid(field) {
+    field.className = " form-control is-valid";
+}
+
     
 function togleStatus(state) {
     state === "login" ? showLogin() : showRegister(); 
@@ -39,21 +84,17 @@ function togleStatus(state) {
 
 function showLogin() {
     loginForm.style.display = "block";
-    form.style.display = "none";
+    registerForm.style.display = "none";
     }
     
 
 function showRegister() {
         loginForm.style.display = "none";
-        form.style.display = "block";
+        registerForm.style.display = "block";
     }
 
 togleStatus(state);
 
-
-function validateLoginForm(target) {
-    logIn(target.email.value, target.password.value);
-}
 
 function registerNewUser(email,password) {
     firebase.auth().createUserWithEmailAndPassword(email, password).then(response => console.log(response)).catch(error => 
@@ -66,8 +107,20 @@ function logIn(email,password) {
 };
 
 function handleError(error) {
-    alert(`Error! ${error.code} - ${error.message}`);
+    const alertsList = document.querySelectorAll('.alert');
+    alertsList.forEach (alert => {
+    const message = alert.querySelector('.error-message');
+    message.innerHTML = error.message;
+    alert.className = "alert alert-danger fade show m-4";
+});
 };
+
+function hideAlert() {
+const alertsList = document.querySelectorAll('.alert');
+alertsList.forEach(alert => {
+    alert.className += " d-none";
+});
+}
 
 firebase.auth().onAuthStateChanged(user => {
     if (user) {

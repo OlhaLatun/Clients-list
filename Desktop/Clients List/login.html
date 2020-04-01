@@ -18,34 +18,35 @@
              <form method="GET" name="registerForm">
             <div class="form-group">
               <h2 class="text-primary pb-2">Create new account</h3>
-              <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter your email">
+              <input  class="form-control" name="email"  placeholder="Enter your email">
             </div>
             <div class="form-group">
               <input type="password" class="form-control" name="password" placeholder="Enter your password">
               <small class="form-text text-muted"><a href="#" onclick="togleStatus('login')">Already have an account?</a> </small>
             </div>
-            
-           
             <button type="submit" class="btn mt-1 btn-primary">Register</button>
+            <div class="alert alert-danger fade d-none show m-4" role="alert" onclick="hideAlert()">
+              <strong>Error!</strong> <span class="error-message"></span>
+            </div>
              </form>
           <form method="GET" name="loginForm">
             <h2 class="text-primary pb-2">Login</h3>
             <div class="form-group">
-              <input type="email" class="form-control" name="email" placeholder="Enter your email"  aria-describedby="emailHelp">
+              <input  class="form-control" name="email" placeholder="Enter your email">
             </div>
             <div class="form-group">
-             
               <input type="password" class="form-control" placeholder="Enter your password"  name="password">
               <small class="form-text text-muted"><a href="#" onclick="togleStatus('register')">Want to register?</a></small>
             </div>
-       
-            
             <button type="submit" class="btn mt-1 btn-primary">Login</button>
-             </form>
+            <div class="alert alert-danger fade d-none show m-4" role="alert" onclick="hideAlert()">
+              <strong>Error!</strong> <span class="error-message"></span>
             </div>
-          </div>
-    </section>
+          </form>
+        </div>
+      </section>
     </div>
+    <script type="text/javascript" src="libs/validator.js" charset="utf-8"></script>
     <script>
       (function() {})();
   </script>
@@ -64,6 +65,7 @@
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
     ></script>
+   
     <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
