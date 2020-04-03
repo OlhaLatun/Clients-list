@@ -46,8 +46,6 @@ isFormValid ? logIn(target.email.value, target.password.value) : null;
 function validateRequiredFields(target) {
     const isPasswordValid = validatePassword(target.password);
     const isEmailValid = validateEmail(target.email);
-    console.log(isPasswordValid);
-    console.log(isEmailValid);
     return isPasswordValid && isEmailValid;
 }
 

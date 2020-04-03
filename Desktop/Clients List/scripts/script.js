@@ -15,6 +15,13 @@ firebase.auth().onAuthStateChanged(user => {
   }
 });
 
+const addClientForm = document.querySelector("#addClientForm");
+
+addClientForm.addEventListener("submit", event => {
+    event.preventDefault();
+    addClient(event.target);
+});
+
 function displayData(clientsList = clients) {
   clearList();
   const ul = document.querySelector("#clientsData");
@@ -59,9 +66,9 @@ function getClientDescription(client) {
 function sortData(order) {
   const sortedClients = clients.sort((lastClient, nextClient) => {
     if (order == "ascending") {
-      return lastClient.lastName > nextClient.lastName ? 1 : -1;
+      return lastClient.lastName.toLowerCase() > nextClient.lastName.toLowerCase() ? 1 : -1;
     } else {
-      return lastClient.lastName < nextClient.lastName ? 1 : -1;
+      return lastClient.lastName.toLowerCase() < nextClient.lastName.toLowerCase() ? 1 : -1;
     }
   });
   refreshData(sortedClients);
@@ -83,9 +90,11 @@ function clearList() {
 function filterByGender(sex) {
   const filteredList = clients.filter(client => {
     if (sex == "male") {
-      return client.gender == "Male";
+      return client.gender.toLowerCase() == "male";
+    } else if (sex == "female"){
+      return client.gender.toLowerCase() == "female";
     } else {
-      return client.gender == "Female";
+      return client.gender.toLowerCase() == "other";
     }
   });
   refreshData(filteredList);
@@ -136,20 +145,20 @@ function getTotalAmount(clientsList = clients) {
 }
 
 function removeCurrencyFromAmount(amount) {
-  return Number(amount.slice(1));
+  return amount ? Number(amount.slice(1)) : 0;
 }
 
-function addClient() {
+function addClient(form) {
   const data = {
-    id:1,
-    firstName:"Demetris",
-    lastName:"Nerheny",
-    email:"dnerheny0@timesonline.co.uk",
-    gender:"Male",
-    amount:"$2.08",
-    date:"7/28/2019",
-    avatar:"https://robohash.org/omnisveniamqui.jpg?size=50x50&set=set1"
+    firstName: form.firstName.value,
+    lastName: form.lastName.value,
+    email: form.email.value,
+    gender: form.gender.value,
+    amount: form.amount.value,
+    date: form.date.value,
+    avatar: form.photo.value
   }
+  console.log(data);
   
   const newId = database.ref().child("clients").push().key;
   let updates = {};

@@ -49,6 +49,12 @@
               >
                 Female</a
               >
+              <a
+                class="dropdown-item"
+                href="#"
+                onmouseover="filterByGender('other')"
+                >Other</a
+              >
             </div>
           </div>
           <button
@@ -76,17 +82,58 @@
           </button>
         </form>
       </nav>
-      <div class="row">
-        <button class="btn-block btn-primary" onclick="addClient()">
-          Add new client
-        </button>
+      <div class="row add-client-form">
+        <form method="POST" id="addClientForm" class="col-12">
+          <div class="form-group col-12">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" name="firstName" id="firstName">
+          </div>
+          <div class="form-group col-12">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" name="lastName" id="lastName">
+          </div>
+          <div class="form-group col-12">
+            <label for="email">Email address</label>
+            <input type="email" name="email" class="form-control" id="email">
+            <small id="emailHelp"  class="form-text text-muted">We'll never share your email with anyone else.</small>
+          </div>
+          <div class="form-group col-12">
+            <label>Gender</label> <br />
+            <label for="male">Male</label>
+            <input type="radio" name="gender" id="male" value="male">
+            <label for="female">Female</label>
+            <input type="radio" name="gender" id="female" value="female">
+            <label for="other">Other</label>
+            <input type="radio" name="gender" id="other" value="other">
+          </div>
+          
+          <div class="form-group col-6">
+            <label for="date">Date</label>
+            <input type="date" class="form-control" name="date" id="date">
+          
+        </div>
+        
+            <div class="form-group col-6">
+            <label for="amount">Amount</label>
+            <input type="text" class="form-control" name="amount" id="amount">
+          </div>
+        
+          <div class="form-group">
+            <label class="btn btn-link"><i class="fas fa-file-download pr-1"></i>Download your picture<input name="photo" type="file" hidden></label>
+  
+          </div>
+          <button class="btn-block btn-primary" type="submit" onclick="addClient()">
+            Add new client
+          </button>
+
+        </form>
       </div>
-      <div class="row">
+      <div class="row clients-list">
         <div class="col-12">
           <ul class="list-unstyled" id="clientsData"></ul>
         </div>
       </div>
-      <div class="row">
+      <div class="row total">
         <div class="col-12">
           <div class="text-right">
             <h3>Total: $<span class="totalAmountContainer">00.00</span></h3>
