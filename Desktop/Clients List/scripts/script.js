@@ -15,12 +15,38 @@ firebase.auth().onAuthStateChanged(user => {
   }
 });
 
-const addClientForm = document.querySelector("#addClientForm");
+const addClientForm = document.getElementById("addClientForm");
+console.log(addClientForm);
 
 addClientForm.addEventListener("submit", event => {
     event.preventDefault();
     addClient(event.target);
 });
+
+function addClient(form) {
+  console.log(form);
+  const data = {
+    firstName: form.firstName.value,
+    lastName: form.lastName.value,
+    email: form.email.value,
+    gender: form.gender.value,
+    amount: form.amount.value,
+    date: form.date.value,
+    avatar: form.photo.value
+  };
+  console.log(data);
+ 
+  const newId = database.ref().child("clients").push().key;
+  let updates = {};
+  updates[`clients/${newId}`] = data;
+  database.ref().update(updates, function(error){
+    if (error) {
+      console.error("Data was not added to database!");
+    } else {
+      console.log("Data added successfully");
+    }
+  });
+}
 
 function displayData(clientsList = clients) {
   clearList();
@@ -146,30 +172,6 @@ function getTotalAmount(clientsList = clients) {
 
 function removeCurrencyFromAmount(amount) {
   return amount ? Number(amount.slice(1)) : 0;
-}
-
-function addClient(form) {
-  const data = {
-    firstName: form.firstName.value,
-    lastName: form.lastName.value,
-    email: form.email.value,
-    gender: form.gender.value,
-    amount: form.amount.value,
-    date: form.date.value,
-    avatar: form.photo.value
-  }
-  console.log(data);
-  
-  const newId = database.ref().child("clients").push().key;
-  let updates = {};
-  updates[`clients/${newId}`] = data;
-  database.ref().update(updates, function(error){
-    if (error) {
-      console.error("Data was not added to database!");
-    } else {
-      console.log("Data added successfully");
-    }
-  });
 }
 
 function logOut() {
