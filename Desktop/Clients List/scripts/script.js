@@ -51,24 +51,25 @@ function addClient(form) {
 function displayData(clientsList = clients) {
   clearList();
   const ul = document.querySelector("#clientsData");
-  clientsList.forEach(client => {
-    ul.appendChild(getElement(client));
-  });
+  for (property in clientsList) {
+    ul.appendChild(getElement(clientsList[property], property));
+  }
   getTotalAmount(clientsList);
 }
 
-function getElement(client) {
+function getElement(client, id) {
   const newLi = document.createElement("li");
   const avatar = document.createElement("img");
   newLi.className = "media";
+  newLi.id = id;
   avatar.className = "mr-3 align-self-senter";
   avatar.setAttribute("src", client.avatar);
   newLi.appendChild(avatar);
-  newLi.appendChild(getClientDescription(client));
+  newLi.appendChild(getClientDescription(client, id));
   return newLi;
 }
 
-function getClientDescription(client) {
+function getClientDescription(client, id) {
   const div = document.createElement("div");
   div.className = "media-body";
   const emailLink = document.createElement("a");
@@ -82,11 +83,26 @@ function getClientDescription(client) {
     ` ${client.gender},  ${client.date}, ${client.amount}`
   );
 
+  const deleteLink = document.createElement("a");
+  deleteLink.setAttribute('href', "#");
+  deleteLink.innerHTML = " Delete";
+
+  deleteLink.addEventListener("click", event => {
+    event.preventDefault();
+    deleteClient(id);
+  })
   div.appendChild(textPart1);
   div.appendChild(emailLink);
   div.appendChild(textPart2);
+  div.appendChild(deleteLink);
 
   return div;
+}
+
+function  deleteClient(id) {
+  console.log(id);
+  const clientRef = database.ref(`clients/${id}`);
+  clientRef.remove();
 }
 
 function sortData(order) {
