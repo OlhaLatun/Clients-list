@@ -22,6 +22,13 @@ addClientForm.addEventListener("submit", event => {
     addClient(event.target);
 });
 
+const editClientForm = document.getElementById("editClientForm");
+
+editClientForm.addEventListener("submit", event => {
+    event.preventDefault();
+    editClient(event.target);
+});
+
 function addClient(form) {
   
   const data = {
@@ -31,13 +38,16 @@ function addClient(form) {
     gender: form.gender.value,
     amount: form.amount.value,
     date: form.date.value,
-    avatar: form.photo.value
   };
   
  
   const newId = database.ref().child("clients").push().key;
   let updates = {};
   updates[`clients/${newId}`] = data;
+  updateDB(updates);
+}
+
+function updateDB(updates) {
   database.ref().update(updates, function(error){
     if (error) {
       console.error("Data was not added to database!");
@@ -94,17 +104,69 @@ function getClientDescription(client, id) {
     getDeleteBtn(id);
   }); 
 
+  const editLink = createEditLink(id);
+
   div.appendChild(textPart1);
   div.appendChild(emailLink);
   div.appendChild(textPart2);
+  div.appendChild(editLink);
   div.appendChild(deleteBtn);
 
   return div;
 }
 
+function createEditLink(id) {
+  const editLink = document.createElement("a");
+  editLink.setAttribute('href', "#");
+  editLink.className = "px-2 edit-client-link";
+  editLink.setAttribute('data-toggle', "modal");
+  editLink.setAttribute('data-target', "#editClientModal");
+  editLink.setAttribute('data-client-id', id);
+  editLink.innerHTML = " Edit";
+  editLink.addEventListener("click", () => {
+    fillClientForm(id); 
+  })
+  
+  return editLink;
+}
+
+function fillClientForm(id) {
+
+  console.log(id);
+  console.log(clients[id]);
+  console.log(clients);
+  if (editClientForm) {
+    editClientForm.firstName.value = clients[id].firstName;
+    editClientForm.lastName.value = clients[id].lastName;
+    editClientForm.email.value = clients[id].email;
+    editClientForm.gender.value = clients[id].gender;
+    editClientForm.amount.value = clients[id].amount;
+    editClientForm.date.value = clients[id].date;
+    editClientForm.clientID.value = id;
+  }
+}
+
+function editClient(form) {
+  
+  const data = {
+    firstName: form.firstName.value,
+    lastName: form.lastName.value,
+    email: form.email.value,
+    gender: form.gender.value,
+    amount: form.amount.value,
+    date: form.date.value,
+  };
+  
+  const id = form.clientID.value;
+  console.log(id);
+  let updates = {};
+  updates[`clients/${id}`] = data;
+  if (id) updateDB(updates);
+}
+
 function getDeleteBtn(id) {
   const confirmDelete = document.querySelector("#confirmDelete");
-  
+
   confirmDelete.addEventListener("click", () => {
     deleteClient(id);
   })
@@ -114,8 +176,6 @@ function  deleteClient(id) {
   const clientRef = database.ref(`clients/${id}`);
   clientRef.remove();
 }
-
-
 
 function sortData(order) {
   const sortedClients = clients.sort((lastClient, nextClient) => {
