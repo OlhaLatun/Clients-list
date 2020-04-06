@@ -16,7 +16,6 @@ firebase.auth().onAuthStateChanged(user => {
 });
 
 const addClientForm = document.getElementById("addClientForm");
-console.log(addClientForm);
 
 addClientForm.addEventListener("submit", event => {
     event.preventDefault();
@@ -24,7 +23,7 @@ addClientForm.addEventListener("submit", event => {
 });
 
 function addClient(form) {
-  console.log(form);
+  
   const data = {
     firstName: form.firstName.value,
     lastName: form.lastName.value,
@@ -34,7 +33,7 @@ function addClient(form) {
     date: form.date.value,
     avatar: form.photo.value
   };
-  console.log(data);
+  
  
   const newId = database.ref().child("clients").push().key;
   let updates = {};
@@ -83,27 +82,40 @@ function getClientDescription(client, id) {
     ` ${client.gender},  ${client.date}, ${client.amount}`
   );
 
-  const deleteLink = document.createElement("a");
-  deleteLink.setAttribute('href', "#");
-  deleteLink.innerHTML = " Delete";
+  const deleteBtn = document.createElement("button");
+  deleteBtn.setAttribute('type', "button");
+  deleteBtn.className = "btn btn-outline-secondary btn-sm ml-1";
+  deleteBtn.setAttribute('data-toggle', "modal");
+  deleteBtn.setAttribute('data-target', "#exampleModal");
+  deleteBtn.innerHTML = " Delete";
 
-  deleteLink.addEventListener("click", event => {
+  deleteBtn.addEventListener("click", event => {
     event.preventDefault();
-    deleteClient(id);
-  })
+    getDeleteBtn(id);
+  }); 
+
   div.appendChild(textPart1);
   div.appendChild(emailLink);
   div.appendChild(textPart2);
-  div.appendChild(deleteLink);
+  div.appendChild(deleteBtn);
 
   return div;
 }
 
+function getDeleteBtn(id) {
+  const confirmDelete = document.querySelector("#confirmDelete");
+  
+  confirmDelete.addEventListener("click", () => {
+    deleteClient(id);
+  })
+}
+
 function  deleteClient(id) {
-  console.log(id);
   const clientRef = database.ref(`clients/${id}`);
   clientRef.remove();
 }
+
+
 
 function sortData(order) {
   const sortedClients = clients.sort((lastClient, nextClient) => {
