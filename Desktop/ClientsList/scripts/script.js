@@ -29,6 +29,8 @@ const editClientForm = document.getElementById("editClientForm");
 editClientForm.addEventListener("submit", event => {
     event.preventDefault();
     editClient(event.target);
+    $('#editClientModal').modal('hide');
+    return false;
 });
 
 function addClient(form) {
@@ -60,10 +62,12 @@ function updateDB(updates) {
 }
 
 function displayData(clientsList = clients) {
+
   clearList();
   clientsList.forEach(client => {
     const ul = document.querySelector("#clientsData");
     ul.appendChild(getElement(client));
+    
   });
   getTotalAmount(clientsList);
 }
@@ -105,6 +109,7 @@ function getClientDescription(client, id) {
 
   deleteBtn.addEventListener("click", event => {
     event.preventDefault();
+    console.log(client[id]);
     getDeleteBtn(id);
   }); 
 
@@ -127,25 +132,24 @@ function createEditLink(id) {
   editLink.setAttribute('data-target', "#editClientModal");
   editLink.setAttribute('data-client-id', id);
   editLink.innerHTML = " Edit";
-  editLink.addEventListener("click", () => {
+  editLink.addEventListener("click", event => {
+    event.preventDefault();
     fillClientForm(id); 
-  })
+  });
   
   return editLink;
 }
 
 function fillClientForm(id) {
+
+  const currentClient = clients.find(client => client.clientID == id);
   if (editClientForm) {
-    console.log(id);
-   console.log(clients.id);
-   console.log(clients);
-    
-    editClientForm.firstName.value = clients[id].firstName;
-    editClientForm.lastName.value = clients[id].lastName;
-    editClientForm.email.value = clients[id].email;
-    editClientForm.gender.value = clients[id].gender;
-    editClientForm.amount.value = clients[id].amount;
-    editClientForm.date.value = clients[id].date;
+    editClientForm.firstName.value = currentClient.firstName;
+    editClientForm.lastName.value = currentClient.lastName;
+    editClientForm.email.value = currentClient.email;
+    editClientForm.gender.value = currentClient.gender;
+    editClientForm.amount.value = currentClient.amount;
+    editClientForm.date.value = currentClient.date;
     editClientForm.clientId.value = id;
   }
 }
