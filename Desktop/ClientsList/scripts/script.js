@@ -61,26 +61,28 @@ function updateDB(updates) {
 
 function displayData(clientsList = clients) {
   clearList();
-  const ul = document.querySelector("#clientsData");
-  for (property in clientsList) {
-    ul.appendChild(getElement(clientsList[property], property));
-  }
+  clientsList.forEach(client => {
+    const ul = document.querySelector("#clientsData");
+    ul.appendChild(getElement(client));
+  });
   getTotalAmount(clientsList);
 }
 
-function getElement(client, id) {
+function getElement(client) {
+
   const newLi = document.createElement("li");
   // const avatar = document.createElement("img");
   newLi.className = "media";
-  newLi.id = id;
+  newLi.id = client.clientID;
   // avatar.className = "mr-3 align-self-senter";
   // avatar.setAttribute("src", client.avatar);
   // newLi.appendChild(avatar);
-  newLi.appendChild(getClientDescription(client, id));
+  newLi.appendChild(getClientDescription(client, client.clientID));
   return newLi;
 }
 
 function getClientDescription(client, id) {
+
   const div = document.createElement("div");
   div.className = "media-body";
   const emailLink = document.createElement("a");
@@ -133,15 +135,18 @@ function createEditLink(id) {
 }
 
 function fillClientForm(id) {
-
   if (editClientForm) {
+    console.log(id);
+   console.log(clients.id);
+   console.log(clients);
+    
     editClientForm.firstName.value = clients[id].firstName;
     editClientForm.lastName.value = clients[id].lastName;
     editClientForm.email.value = clients[id].email;
     editClientForm.gender.value = clients[id].gender;
     editClientForm.amount.value = clients[id].amount;
     editClientForm.date.value = clients[id].date;
-    editClientForm.clientID.value = id;
+    editClientForm.clientId.value = id;
   }
 }
 
@@ -156,7 +161,7 @@ function editClient(form) {
     date: form.date.value,
   };
   
-  const id = form.clientID.value;
+  const id = form.clientId.value;
   console.log(id);
   let updates = {};
   updates[`clients/${id}`] = data;
