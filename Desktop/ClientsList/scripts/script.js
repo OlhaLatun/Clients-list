@@ -1,17 +1,26 @@
+
+import "bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/index.css";
+
+const firebase = require('firebase/app');
+require('firebase/auth');
+require('firebase/database');
+import { appInit } from "./firebase-latun";
+import { getData, clients } from "./clientsData";
+import { showClientsList, showCorrectSection, refreshData, displayData } from "./dom";
+
+
+appInit();
+getData();
+
+//Observe changes
+
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
-    // User is signed in.
-  //   var displayName = user.displayName;
     let email = user.email;
-  //   var emailVerified = user.emailVerified;
-  //   var photoURL = user.photoURL;
-  //   var isAnonymous = user.isAnonymous;
-  //   var uid = user.uid;
-  //   var providerData = user.providerData;
-    // ...
   } else {
-    // User is signed out.
-    window.location.href = "file:///Users/oluna/Desktop/Clients%20List/login.html";
+    window.location.href = "./login.html";
   }
 });
 
@@ -20,7 +29,6 @@ const addClientForm = document.getElementById("addClientForm");
 addClientForm.addEventListener("submit", event => {
     event.preventDefault();
     addClient(event.target);
-    $('#newClientForm').modal('hide');
     return false;
 });
 
@@ -29,10 +37,45 @@ const editClientForm = document.getElementById("editClientForm");
 editClientForm.addEventListener("submit", event => {
     event.preventDefault();
     editClient(event.target);
-    $('#editClientModal').modal('hide');
     return false;
 });
 
+const filterGender = [
+  { id: "filterMale", value: "male" },
+  { id: "filterFemale", value: "female" },
+  { id: "filterOther", value: "other" },
+  { id: "filterAll", value: "all"}
+];
+
+filterGender.forEach(filter => {
+  const element = document.querySelector(`#${filter.id}`);
+  element.addEventListener("mouseover", () => {
+    filterByGender(filter.value);
+  });
+});
+
+const sortFields = [
+  { id: "sortAscending", value: "ascending" },
+  { id: "sortDescending", value: "descending" }
+];
+
+sortFields.forEach(field => {
+  const element = document.querySelector(`#${field.id}`);
+  element.addEventListener("click", () => {
+    sortData(field.value);
+  });
+});
+
+const filterField = document.querySelector("#filterInput");
+filterField.addEventListener("keyup", event => {
+  filterClients(event);
+})
+
+const logOutBtn = document.querySelector("#logout");
+logOutBtn.addEventListener("click", () => {
+  logOut();
+});
+ 
 function addClient(form) {
   
   const data = {
@@ -45,113 +88,20 @@ function addClient(form) {
   };
   
  
-  const newId = database.ref().child("clients").push().key;
+  const newId = firebase.database().ref().child("clients").push().key;
   let updates = {};
   updates[`clients/${newId}`] = data;
   updateDB(updates);
 }
 
 function updateDB(updates) {
-  database.ref().update(updates, function(error){
+  firebase.database().ref().update(updates, function(error){
     if (error) {
       console.error("Data was not added to database!");
     } else {
       console.log("Data added successfully");
     }
   });
-}
-
-function displayData(clientsList = clients) {
-
-  clearList();
-  clientsList.forEach(client => {
-    const ul = document.querySelector("#clientsData");
-    ul.appendChild(getElement(client));
-    
-  });
-  getTotalAmount(clientsList);
-}
-
-function getElement(client) {
-
-  const newLi = document.createElement("li");
-  // const avatar = document.createElement("img");
-  newLi.className = "media";
-  newLi.id = client.clientID;
-  // avatar.className = "mr-3 align-self-senter";
-  // avatar.setAttribute("src", client.avatar);
-  // newLi.appendChild(avatar);
-  newLi.appendChild(getClientDescription(client, client.clientID));
-  return newLi;
-}
-
-function getClientDescription(client, id) {
-
-  const div = document.createElement("div");
-  div.className = "media-body";
-  const emailLink = document.createElement("a");
-  emailLink.setAttribute("href", `mailto:${client.mail}`);
-  emailLink.innerHTML = client.email;
-
-  const textPart1 = document.createTextNode(
-    `${client.lastName} ${client.firstName} `
-  );
-  const textPart2 = document.createTextNode(
-    ` ${client.gender},  ${client.date}, ${client.amount}`
-  );
-
-  const deleteBtn = document.createElement("button");
-  deleteBtn.setAttribute('type', "button");
-  deleteBtn.className = "btn btn-outline-secondary btn-sm ml-1";
-  deleteBtn.setAttribute('data-toggle', "modal");
-  deleteBtn.setAttribute('data-target', "#exampleModal");
-  deleteBtn.innerHTML = " Delete";
-
-  deleteBtn.addEventListener("click", event => {
-    event.preventDefault();
-    console.log(client[id]);
-    getDeleteBtn(id);
-  }); 
-
-  const editLink = createEditLink(id);
-
-  div.appendChild(textPart1);
-  div.appendChild(emailLink);
-  div.appendChild(textPart2);
-  div.appendChild(editLink);
-  div.appendChild(deleteBtn);
-
-  return div;
-}
-
-function createEditLink(id) {
-  const editLink = document.createElement("a");
-  editLink.setAttribute('href', "#");
-  editLink.className = "px-2 edit-client-link";
-  editLink.setAttribute('data-toggle', "modal");
-  editLink.setAttribute('data-target', "#editClientModal");
-  editLink.setAttribute('data-client-id', id);
-  editLink.innerHTML = " Edit";
-  editLink.addEventListener("click", event => {
-    event.preventDefault();
-    fillClientForm(id); 
-  });
-  
-  return editLink;
-}
-
-function fillClientForm(id) {
-
-  const currentClient = clients.find(client => client.clientID == id);
-  if (editClientForm) {
-    editClientForm.firstName.value = currentClient.firstName;
-    editClientForm.lastName.value = currentClient.lastName;
-    editClientForm.email.value = currentClient.email;
-    editClientForm.gender.value = currentClient.gender;
-    editClientForm.amount.value = currentClient.amount;
-    editClientForm.date.value = currentClient.date;
-    editClientForm.clientId.value = id;
-  }
 }
 
 function editClient(form) {
@@ -172,16 +122,8 @@ function editClient(form) {
   if (id) updateDB(updates);
 }
 
-function getDeleteBtn(id) {
-  const confirmDelete = document.querySelector("#confirmDelete");
-
-  confirmDelete.addEventListener("click", () => {
-    deleteClient(id);
-  })
-}
-
 function  deleteClient(id) {
-  const clientRef = database.ref(`clients/${id}`);
+  const clientRef = firebase.database().ref(`clients/${id}`);
   clientRef.remove();
 }
 
@@ -196,35 +138,23 @@ function sortData(order) {
   refreshData(sortedClients);
 }
 
-function refreshData(updatedClients) {
-  clearList();
-  displayData(updatedClients);
-}
-
-function clearList() {
-  $("ul").empty();
-  // const ul = document.querySelector("#clientsData");
-  //   while (ul.firstChild) {
-  //     ul.removeСhild(ul.firstChild);
-  // }
-}
-
 function filterByGender(sex) {
   const filteredList = clients.filter(client => {
     if (sex == "male") {
       return client.gender.toLowerCase() == "male";
     } else if (sex == "female"){
       return client.gender.toLowerCase() == "female";
-    } else {
+    } else if (sex == "other") {
       return client.gender.toLowerCase() == "other";
-    }
+    } else {
+     return clients;
+    };
   });
   refreshData(filteredList);
 }
 
-function filterClients() {
-  const filterString = document
-    .querySelector("#filterInput")
+function filterClients(event) {
+  const filterString = event.target
     .value.toLowerCase()
     .trim();
   if (filterString) {
@@ -242,22 +172,20 @@ function filterClients() {
     showClientsList();
   }
 }
-function showCorrectSection(filteredClients) {
-  if (filteredClients.length === 0) {
-    document.querySelector(".notFound").style.display = "block";
-    document.querySelector("#clientsData").style.display = "none";
-  } else {
-    document.querySelector(".notFound").style.display = "none";
-    document.querySelector("#clientsData").style.display = "block";
-  }
+
+function removeCurrencyFromAmount(amount) {
+  return amount ? Number(amount.slice(1)) : 0;
 }
 
-function showClientsList() {
-  document.querySelector(".notFound").style.display = "none";
-  document.querySelector("#clientsData").style.display = "block";
+function logOut() {
+  firebase.auth().signOut().then(function() {
+      window.location = '/login.html';
+  }).catch(function(error) {
+    console.log(error);
+  });
 }
 
-function getTotalAmount(clientsList = clients) {
+export function getTotalAmount(clientsList = clients) {
   const total = clientsList.reduce((amount, client) => {
     return amount + removeCurrencyFromAmount(client.amount);
   }, 0);
@@ -266,16 +194,23 @@ function getTotalAmount(clientsList = clients) {
   });
 }
 
-function removeCurrencyFromAmount(amount) {
-  return amount ? Number(amount.slice(1)) : 0;
+export function getDeleteBtn(id) {
+  const confirmDelete = document.querySelector("#confirmDelete");
+  confirmDelete.addEventListener("click", () => {
+    deleteClient(id);
+  })
 }
 
-function logOut() {
-  firebase.auth().signOut().then(function() {
-    // Sign-out successful.
-    window.location.href = "file:///Users/oluna/Desktop/Clients%20List/login.html";
-  }).catch(function(error) {
-    console.log(error);
-    // An error happened.
-  });
+export function fillClientForm(id) {
+
+  const currentClient = clients.find(client => client.clientID == id);
+  if (editClientForm) {
+    editClientForm.firstName.value = currentClient.firstName;
+    editClientForm.lastName.value = currentClient.lastName;
+    editClientForm.email.value = currentClient.email;
+    editClientForm.gender.value = currentClient.gender;
+    editClientForm.amount.value = currentClient.amount;
+    editClientForm.date.value = currentClient.date;
+    editClientForm.clientId.value = id;
+  }
 }
