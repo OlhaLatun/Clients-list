@@ -1,4 +1,26 @@
 
+import "bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/index.css";
+import "validator";
+
+const validator = require('validator');
+const firebase = require('firebase/app');
+require('firebase/auth');
+require('firebase/database');
+import { appInit } from "./firebase-latun";
+
+appInit(); 
+togleStatus(state);
+
+firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      let email = user.email;
+      window.location.href = "./clientsList.html";
+    } else {
+    }
+  });
+
 let state = "login";
 const registerForm = document.querySelector("[name='registerForm']");
 
@@ -29,6 +51,26 @@ loginForm.querySelector("[type='password']").addEventListener("blur", event => {
 
 loginForm.querySelector("[name='email']").addEventListener("blur", event => {
     validateEmail(event.target);
+});
+
+const toggleLinks = [
+    { id: "toggleLogin", value: "login" },
+    { id: "toggleRegister", value: "register" }
+  ];
+  
+  toggleLinks.forEach(link => {
+   
+    const element = document.querySelector(`#${link.id}`);
+    element.addEventListener("click", () => {
+        togleStatus(link.value);
+    });
+  });
+
+  const alertDivs = document.querySelectorAll('.alert');
+alertDivs.forEach(div => {
+    div.addEventListener("click", () => {
+        div.className += " d-none";
+    });
 });
 
 // Validation 
@@ -91,9 +133,6 @@ function showRegister() {
         registerForm.style.display = "block";
     }
 
-togleStatus(state);
-
-
 function registerNewUser(email,password) {
     firebase.auth().createUserWithEmailAndPassword(email, password).then(response => console.log(response)).catch(error => 
         handleError(error));
@@ -112,29 +151,3 @@ function handleError(error) {
     alert.className = "alert alert-danger fade show m-4";
 });
 };
-
-function hideAlert() {
-const alertsList = document.querySelectorAll('.alert');
-alertsList.forEach(alert => {
-    alert.className += " d-none";
-});
-}
-
-firebase.auth().onAuthStateChanged(user => {
-    if (user) {
-      // User is signed in.
-    //   var displayName = user.displayName;
-      let email = user.email;
-      console.log(email);
-      window.location.href = "file:///Users/oluna/Desktop/Clients%20List/clientsList.html";
-    //   var emailVerified = user.emailVerified;
-    //   var photoURL = user.photoURL;
-    //   var isAnonymous = user.isAnonymous;
-    //   var uid = user.uid;
-    //   var providerData = user.providerData;
-      // ...
-    } else {
-      // User is signed out.
-      // ...
-    }
-  });
