@@ -11,7 +11,7 @@ require('firebase/database');
 import { appInit } from "./firebase-latun";
 
 appInit(); 
-togleStatus(state);
+
 
 firebase.auth().onAuthStateChanged(user => {
     if (user) {
@@ -66,6 +66,8 @@ const toggleLinks = [
     });
   });
 
+  togleStatus(state); 
+  
   const alertDivs = document.querySelectorAll('.alert');
 alertDivs.forEach(div => {
     div.addEventListener("click", () => {
