@@ -66,8 +66,6 @@ const toggleLinks = [
     });
   });
 
-  togleStatus(state); 
-  
   const alertDivs = document.querySelectorAll('.alert');
 alertDivs.forEach(div => {
     div.addEventListener("click", () => {
@@ -75,6 +73,7 @@ alertDivs.forEach(div => {
     });
 });
 
+togleStatus(state); 
 // Validation 
 
 function validateRegisterForm(target) {
