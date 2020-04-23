@@ -1,4 +1,4 @@
 /scripts/firebase-latun.js
 dist
 .cache
-node_modules
+/node_modules
