@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/index.css";
 
 const firebase = require('firebase/app');
+const $ = require('jquery');
 require('firebase/auth');
 require('firebase/database');
 import { appInit } from "./firebase-latun";
@@ -29,6 +30,7 @@ const addClientForm = document.getElementById("addClientForm");
 addClientForm.addEventListener("submit", event => {
     event.preventDefault();
     addClient(event.target);
+    $('#newClientForm').modal('hide');
     return false;
 });
 
@@ -37,6 +39,7 @@ const editClientForm = document.getElementById("editClientForm");
 editClientForm.addEventListener("submit", event => {
     event.preventDefault();
     editClient(event.target);
+    $('#editClientModal').modal('hide');
     return false;
 });
 
